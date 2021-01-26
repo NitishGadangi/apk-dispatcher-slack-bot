@@ -8,6 +8,20 @@ const authToken = process.env.AUTH_TOKEN;
 const triggerToken = process.env.TRIGGER_TOKEN;
 const trigger_api = process.env.TRIGGER_API;
 
+function generateSuccessReply(user_id, ticket, ref){
+    return {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `${user_id} Your request is submitted. Relax :coffee: ! while I build the Apk for you!\n>This usually takes 4-5 minutes. I *will ping you* once its done.\n>Your ticket - ${ticket} \n>Branch Selected - *${ticket}*`
+                }
+            }
+        ]
+    }
+}
+
 router.get('/', function(req, res, next) {
     
 });
@@ -81,10 +95,7 @@ router.post('/actions', async (req,res) => {
                 .then(function (response) {
                     const ticket = response.data.id;
                     const ref = response.data.ref;
-                    return res.send(`${user_id} Your request is submitted. Hold tight while I build the Apk for you! \n
-                    This usually takes 4-5 minutes. I will ping you once its done.\
-                    Your ticked - ${ticket} \n
-                    Branch Selected - ${ref}`);
+                    return res.send(generateSuccessReply(user_id, ticket, ref));
                 })
                 .catch(function (response) {
                     console.log(response);
