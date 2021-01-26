@@ -58,9 +58,10 @@ router.post('/get_apk',function(req,res) {
       }
 });
 
-router.post('/actions',function(req,res) {
+router.post('/actions', async (req,res) => {
     try {
         const payload = JSON.parse(req.body.payload);
+        
         if (payload.callback_id === 'query_selection') {
             const branch_selected = payload.actions[0].selected_options[0].value;
             const user_id = `<@${payload.user.id}>`;
