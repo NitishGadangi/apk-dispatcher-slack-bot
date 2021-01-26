@@ -76,7 +76,7 @@ router.post('/actions', async (req,res) => {
                 method: 'post',
                 url: trigger_api,
                 data: bodyForm,
-                headers: {'Content-Type': 'multipart/form-data' }
+                headers: bodyForm.getHeaders()
                 })
                 .then(function (response) {
                     const ticket = response.data.id;
