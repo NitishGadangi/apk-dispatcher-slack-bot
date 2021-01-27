@@ -7,12 +7,17 @@ const branches_api = process.env.BRANCHES_API;
 const authToken = process.env.AUTH_TOKEN;
 const triggerToken = process.env.TRIGGER_TOKEN;
 const trigger_api = process.env.TRIGGER_API;
+const pipeline_api = process.env.PIPELINE_API;
 
 function generateSuccessReply(user_id, ticket, ref){
-    return {
-        "replace_original": true,
-        "text": `${user_id} Your request is submitted. Relax :coffee:  while I build the Apk for you!\n >This usually takes 4-5 minutes. I *will ping you* once its done.\n >Your ticket - ${ticket} \n >Branch Selected - *${ref}*`
-      }
+  return {
+      "replace_original": true,
+      "text": `${user_id} Your request is submitted. Relax :coffee:  while I build the Apk for you!\n > This usually takes 4-5 minutes. I *will ping you* once its done.\n > Your ticket_id - ${ticket} \n > Branch Selected - *${ref}*\nYou can anytime do */get_status [ticket_id]* to know about request status`
+    }
+}
+
+function getPipelinesEndpoind(pipeline_id){
+  return `${pipeline_api}/${pipeline_id}`;
 }
 
 router.get('/', function(req, res, next) {
@@ -107,7 +112,8 @@ router.post('/actions', async (req,res) => {
 
 router.post('/help',function(req,res) {
     try {
-        //add logic here
+        res.send(`To fetch APK, type */get_apk* and enter. Select a *branch* from the response and relax! \n
+        If you have already placed a request, You can use */get_status [ticked_id]* to get the status of your request`);
       } catch (err) {
         console.log(err);
         return res.status(500).send('Something went wrong :(');
@@ -116,7 +122,22 @@ router.post('/help',function(req,res) {
 
 router.post('/get_status',function(req,res) {
     try {
-        //add logic here
+      axios.get(getPipelinesEndpoind(req.body.text), { 'headers': { 'PRIVATE-TOKEN': authToken } })
+      .then(response => {
+          const pipeline_id = response.data.id;
+          const status = response.data.status;
+          const ref = response.data.ref;
+          const user_id = `<@${req.body.user_id}>`;
+          if(pipeline_id != undefined){
+            res.send(`Hi ${user_id}, Your request for APK of *${ref} branch* (ticket : ${pipeline_id})\n> status : *${status}*`);
+          }else{
+            res.send(`Something went wrong. ${response.data.error}`);
+          }
+      })
+      .catch((error) => {
+          console.log(error);
+          return res.status(500).send('Something went wrong :(');
+      });
       } catch (err) {
         console.log(err);
         return res.status(500).send('Something went wrong :(');
