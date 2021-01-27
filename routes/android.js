@@ -11,7 +11,7 @@ const trigger_api = process.env.TRIGGER_API;
 function generateSuccessReply(user_id, ticket, ref){
     return {
         "replace_original": true,
-        "text": `${user_id} Your request is submitted. Relax :coffee: ! while I build the Apk for you!\n >This usually takes 4-5 minutes. I *will ping you* once its done.\n >Your ticket - ${ticket} \n >Branch Selected - *${ref}*`
+        "text": `${user_id} Your request is submitted. Relax :coffee:  while I build the Apk for you!\n >This usually takes 4-5 minutes. I *will ping you* once its done.\n >Your ticket - ${ticket} \n >Branch Selected - *${ref}*`
       }
 }
 
@@ -73,11 +73,13 @@ router.post('/actions', async (req,res) => {
         if (payload.callback_id === 'query_selection') {
             const branch_selected = payload.actions[0].selected_options[0].value;
             const user_id = `<@${payload.user.id}>`;
+            const channel_id = payload.channel.id;
 
             var bodyForm = new FormData();
             bodyForm.append('token', triggerToken);
             bodyForm.append('ref', branch_selected);
             bodyForm.append('variables[SLACK_REFERRER_ID]', user_id);
+            bodyForm.append('variables[SLACK_CHANNEL_ID]', channel_id);
 
             axios({
                 method: 'post',
