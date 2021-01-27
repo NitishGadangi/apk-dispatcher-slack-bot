@@ -101,7 +101,11 @@ router.post('/actions', async (req,res) => {
                 .then(function (response) {
                     const ticket = response.data.id;
                     const ref = response.data.ref;
-                    return res.send(generateSuccessReply(user_id, ticket, ref));
+                    if(ticket != undefined){
+                      return res.send(generateSuccessReply(user_id, ticket, ref));
+                    }else{
+                      return res.send(`${response.data.message.base} \n>There is some error with this branch, ping someone from *engineering-team* fix this.`);
+                    }
                 })
                 .catch(function (response) {
                     console.log(response);
