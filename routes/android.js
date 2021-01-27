@@ -23,7 +23,7 @@ function getPipelinesEndpoind(pipeline_id){
 }
 
 function getErrorMessage(errorMsg){
-  return `Something went wrong :( (${errorMsg})`;
+  return `Something went wrong :cry: (${errorMsg})\n>Ping someone from *engineering-team* to fix this.`;
 }
 
 router.get('/', function(req, res, next) {
@@ -104,7 +104,7 @@ router.post('/actions', async (req,res) => {
                     if(ticket != undefined){
                       return res.send(generateSuccessReply(user_id, ticket, ref));
                     }else{
-                      return res.send(`${response.data.message.base} \n>There is some error with this branch, ping someone from *engineering-team* fix this.`);
+                      return res.send(`${response.data.message.base} \n>There is some error with this branch, ping someone from *engineering-team* to fix this.`);
                     }
                 })
                 .catch(function (response) {
