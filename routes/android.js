@@ -12,7 +12,7 @@ const pipeline_api = process.env.PIPELINE_API;
 function generateSuccessReply(user_id, ticket, ref){
   return {
       "replace_original": true,
-      "text": `${user_id} Your request is submitted. Relax :coffee:  while I build the Apk for you!\n > This usually takes 4-5 minutes. I *will ping you* once its done.\n > Your ticket_id - ${ticket} \n > Branch Selected - *${ref}*\nYou can anytime do */get_status [ticket_id]* to know about request status`
+      "text": `${user_id} Your request is submitted. Relax :coffee:  while I build the Apk for you!\n> This usually takes 4-5 minutes. I *will ping you* once its done.\n> Your ticket_id - ${ticket} \n> Branch Selected - *${ref}*\nYou can anytime do */get_status [ticket_id]* to know about request status`
     }
 }
 
@@ -112,8 +112,7 @@ router.post('/actions', async (req,res) => {
 
 router.post('/help',function(req,res) {
     try {
-        res.send(`To fetch APK, type */get_apk* and enter. Select a *branch* from the response and relax! \n
-        If you have already placed a request, You can use */get_status [ticked_id]* to get the status of your request`);
+        res.send(`To fetch APK, type */get_apk* and enter. Select a *branch* from the response and relax!\n>If you have already placed a request, You can use */get_status [ticked_id]* to get the status of your request`);
       } catch (err) {
         console.log(err);
         return res.status(500).send('Something went wrong :(');
