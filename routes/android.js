@@ -3,11 +3,13 @@ const axios = require('axios');
 var router = express.Router();
 var FormData = require('form-data');
 
-const branches_api = process.env.BRANCHES_API;
+const project_id = process.env.PROJECT_ID;
 const authToken = process.env.AUTH_TOKEN;
 const triggerToken = process.env.TRIGGER_TOKEN;
-const trigger_api = process.env.TRIGGER_API;
-const pipeline_api = process.env.PIPELINE_API;
+
+const branches_api = `https://gitlab.com/api/v4/projects/${project_id}/repository/branches`;
+const trigger_api = `https://gitlab.com/api/v4/projects/${project_id}/trigger/pipeline`;
+const pipeline_api = `https://gitlab.com/api/v4/projects/${project_id}/pipelines`;
 
 function generateSuccessReply(user_id, ticket, ref){
   return {
@@ -18,6 +20,10 @@ function generateSuccessReply(user_id, ticket, ref){
 
 function getPipelinesEndpoind(pipeline_id){
   return `${pipeline_api}/${pipeline_id}`;
+}
+
+function getErrorMessage(errorMsg){
+  return `Something went wrong :( (${errorMsg})`;
 }
 
 router.get('/', function(req, res, next) {
@@ -63,11 +69,11 @@ router.post('/get_apk',function(req,res) {
         })
         .catch((error) => {
             console.log(error);
-            return res.status(500).send('Something went wrong :(');
+            return res.status(500).send(getErrorMessage(`inside getApk while fetching branches`));
         });
       } catch (err) {
         console.log(err);
-        return res.status(500).send('Something went wrong :(');
+        return res.status(500).send(getErrorMessage(`error with code execution /getApk`));
       }
 });
 
@@ -99,14 +105,14 @@ router.post('/actions', async (req,res) => {
                 })
                 .catch(function (response) {
                     console.log(response);
-                    return res.send('Something went wrong! Try Again!');
+                    return res.send(getErrorMessage(`inside actions while triggering pipeline`));
                 });
         }else{
-            return res.send('Something went wrong! Try Again!');
+            return res.send(getErrorMessage(`inside actions unknown reponse from SlackApi`));
         }
       } catch (err) {
         console.log(err);
-        return res.status(500).send('Something went wrong :(');
+        return res.status(500).send(getErrorMessage(`error with code execution /actions`));
       }
 });
 
@@ -115,7 +121,7 @@ router.post('/help',function(req,res) {
         res.send(`To fetch APK, type */get_apk* and enter. Select a *branch* from the response and relax!\n>If you have already placed a request, You can use */get_status [ticked_id]* to get the status of your request`);
       } catch (err) {
         console.log(err);
-        return res.status(500).send('Something went wrong :(');
+        return res.status(500).send(getErrorMessage(`error with code execution /help`));
       }
 });
 
@@ -135,11 +141,11 @@ router.post('/get_status',function(req,res) {
       })
       .catch((error) => {
           console.log(error);
-          return res.status(500).send('Something went wrong :(');
+          return res.status(500).send(getErrorMessage(`inside getStatus while fetching pipeline status`));
       });
       } catch (err) {
         console.log(err);
-        return res.status(500).send('Something went wrong :(');
+        return res.status(500).send(getErrorMessage(`error with code execution /get_status`));
       }
 });
 

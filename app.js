@@ -21,6 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+//route for android apk dispatcher commands
 app.use('/android', androidRouter);
 
 // catch 404 and forward to error handler
