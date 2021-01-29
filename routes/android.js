@@ -6,6 +6,7 @@ var FormData = require('form-data');
 const project_id = process.env.PROJECT_ID;
 const authToken = process.env.AUTH_TOKEN;
 const triggerToken = process.env.TRIGGER_TOKEN;
+const slackAccessToken = process.env.SLACK_CHANNEL_ACCESS_TOKEN;
 
 const branches_api = `https://gitlab.com/api/v4/projects/${project_id}/repository/branches`;
 const trigger_api = `https://gitlab.com/api/v4/projects/${project_id}/trigger/pipeline`;
@@ -91,6 +92,7 @@ router.post('/actions', async (req,res) => {
             bodyForm.append('ref', branch_selected);
             bodyForm.append('variables[SLACK_REFERRER_ID]', user_id);
             bodyForm.append('variables[SLACK_CHANNEL_ID]', channel_id);
+            bodyForm.append('SLACK_CHANNEL_ACCESS_TOKEN', slackAccessToken);
 
             axios({
                 method: 'post',
