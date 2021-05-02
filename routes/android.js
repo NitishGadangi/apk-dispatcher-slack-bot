@@ -3,6 +3,7 @@ const axios = require('axios');
 var router = express.Router();
 var FormData = require('form-data');
 
+//Dont forget to set these Environment variable in .env or Config Vars(if in case you use Heroku) when deployed.
 const project_id = process.env.PROJECT_ID;
 const authToken = process.env.AUTH_TOKEN;
 const triggerToken = process.env.TRIGGER_TOKEN;
@@ -28,9 +29,10 @@ function getErrorMessage(errorMsg){
 }
 
 router.get('/', function(req, res, next) {
-    
+    //base route
 });
 
+//Triggered from using a slash command. This should intern get the branch list and post to slack api to show it to user.
 router.post('/get_apk',function(req,res) {
     try {
         axios.get(branches_api, { 'headers': { 'PRIVATE-TOKEN': authToken } })
@@ -78,6 +80,7 @@ router.post('/get_apk',function(req,res) {
       }
 });
 
+//Any interactions interactive components (such as buttons, select menus, and datepickers) will be sent to this end point.
 router.post('/actions', async (req,res) => {
     try {
         const payload = JSON.parse(req.body.payload);
@@ -122,6 +125,7 @@ router.post('/actions', async (req,res) => {
       }
 });
 
+//Triggered from using a slash command. This will post the instructions to slack-api.
 router.post('/help',function(req,res) {
     try {
         res.send(`To fetch APK, type */get_apk* and enter. Select a *branch* from the response and relax!\n>If you have already placed a request, You can use */get_status [ticked_id]* to get the status of your request`);
@@ -131,6 +135,7 @@ router.post('/help',function(req,res) {
       }
 });
 
+//Triggered from using a slash command. This will check the status of pipeline corresponding to the given id and post the details back to slack-api.
 router.post('/get_status',function(req,res) {
     try {
       axios.get(getPipelinesEndpoind(req.body.text), { 'headers': { 'PRIVATE-TOKEN': authToken } })
